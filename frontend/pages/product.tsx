@@ -13,7 +13,33 @@ const DEMO_PRODUCTS = [
   { id: 'p3', title: 'Demo Product C', price: '₹1999', img: '/images/headset.jpeg', desc: 'A short description of demo product C.' },
 ]
 
-export default function Product(){
+/**
+ * Build typed headers for fetch. This avoids TS complaining about spreading
+ * unknown/any values into the headers object.
+ */
+function buildAuthHeaders(tok?: string | null): Record<string, string> {
+  const base: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (!tok) return base
+
+  try {
+    const h = (authHeaders as any)(tok)
+    if (!h || typeof h !== 'object') {
+      // fallback to Authorization header if helper returns something unexpected
+      base.Authorization = `Bearer ${tok}`
+      return base
+    }
+    // copy entries, coercing values to strings
+    Object.entries(h).forEach(([k, v]) => {
+      base[k] = typeof v === 'string' ? v : String(v)
+    })
+    return base
+  } catch {
+    base.Authorization = `Bearer ${tok}`
+    return base
+  }
+}
+
+export default function Product(): JSX.Element {
   const router = useRouter()
   const { token } = useAuth()
   const [loadingId, setLoadingId] = useState<string | null>(null)
@@ -24,15 +50,30 @@ export default function Product(){
     setErr(null)
     setLoadingId(productId)
     try {
-      const res = await fetch((process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api') + '/purchase/buy', {
-        method: 'POST', headers: { 'Content-Type': 'application/json', ...authHeaders(token) }, body: JSON.stringify({ amount })
+      const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api'
+      const headers = buildAuthHeaders(token)
+      const res = await fetch(base + '/purchase/buy', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ amount })
       })
-      if (!res.ok) throw await res.json()
-      const json = await res.json()
-      router.push({ pathname: '/purchase-success', query: { amount, creditsRemaining: json.credits, referralBonus: json.purchase.referralBonus ? 'true' : 'false' } })
+
+      // parse body once (avoid consuming stream twice)
+      const body = await res.json().catch(() => ({}))
+      if (!res.ok) throw body
+
+      const json = body
+      router.push({
+        pathname: '/purchase-success',
+        query: {
+          amount,
+          creditsRemaining: json.credits,
+          referralBonus: json.purchase?.referralBonus ? 'true' : 'false'
+        }
+      })
     } catch (e: any) {
       console.error('Purchase error', e)
-      setErr(e.message || 'Purchase failed')
+      setErr(e?.message || (typeof e === 'string' ? e : 'Purchase failed'))
     } finally {
       setLoadingId(null)
     }
@@ -68,7 +109,13 @@ export default function Product(){
             <div key={p.id}>
               <ProductCard title={p.title} price={p.price} img={p.img} desc={p.desc} />
               <div className="mt-3 flex items-center gap-3">
-                <button onClick={() => buy(p.id, 10)} disabled={!!loadingId} className="flex-1 px-4 py-2 bg-brand-600 text-white rounded">{loadingId === p.id ? 'Processing...' : 'Buy'}</button>
+                <button
+                  onClick={() => buy(p.id, 10)}
+                  disabled={!!loadingId}
+                  className="flex-1 px-4 py-2 bg-brand-600 text-white rounded"
+                >
+                  {loadingId === p.id ? 'Processing...' : 'Buy'}
+                </button>
                 <Link href={`/product`} className="px-3 py-2 border rounded">Details</Link>
               </div>
             </div>
