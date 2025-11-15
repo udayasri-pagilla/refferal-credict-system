@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 type Props = { title: string; price: string; href?: string; img?: string; desc?: string }
 
-export default function ProductCard({ title, price, href = '/product', img = '/images/product1.svg', desc = 'A useful demo product.' }: Props){
+export default function ProductCard({ title, price, href = '/product', img = '/images/download2.jpeg', desc = 'A useful demo product.' }: Props){
   return (
     <article className="border rounded-lg bg-white p-4 shadow-sm hover:shadow-md transform hover:scale-105 transition-all duration-200 animate-fade-in-up transform-gpu flex flex-col">
       <div className="h-44 bg-gray-100 rounded overflow-hidden flex items-center justify-center text-gray-400">

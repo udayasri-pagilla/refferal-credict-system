@@ -8,9 +8,9 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 
 const DEMO_PRODUCTS = [
-  { id: 'p1', title: 'Demo Product A', price: '₹799', img: '/images/product1.svg', desc: 'A short description of demo product A.' },
-  { id: 'p2', title: 'Demo Product B', price: '₹1299', img: '/images/product2.svg', desc: 'A short description of demo product B.' },
-  { id: 'p3', title: 'Demo Product C', price: '₹1999', img: '/images/product3.svg', desc: 'A short description of demo product C.' },
+  { id: 'p1', title: 'Demo Product A', price: '₹799', img: '/images/phone.jpeg', desc: 'A short description of demo product A.' },
+  { id: 'p2', title: 'Demo Product B', price: '₹1299', img: '/images/laptop.jpg', desc: 'A short description of demo product B.' },
+  { id: 'p3', title: 'Demo Product C', price: '₹1999', img: '/images/headset.jpeg', desc: 'A short description of demo product C.' },
 ]
 
 export default function Product(){
