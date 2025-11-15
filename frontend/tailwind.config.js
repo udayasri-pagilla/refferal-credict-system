@@ -19,6 +19,13 @@ module.exports = {
         'fade-in-up': 'fade-in-up 500ms ease-out both',
         lift: 'lift 160ms ease-out both',
       },
+      colors: {
+        brand: {
+          DEFAULT: '#4f46e5',
+          600: '#4f46e5',
+          700: '#4338ca'
+        }
+      }
     },
   },
   plugins: [],

@@ -4,7 +4,7 @@ type Props = { title: string; price: string; href?: string; img?: string }
 
 export default function ProductCard({ title, price, href = '/product', img = '/images/product1.svg' }: Props){
   return (
-    <div className="border rounded-lg bg-white p-4 shadow-sm hover:shadow-md transform hover:-translate-y-1 transition-all duration-200 animate-fade-in-up">
+    <div className="border rounded-lg bg-white p-4 shadow-sm hover:shadow-md transform hover:scale-105 transition-all duration-200 animate-fade-in-up transform-gpu">
       <div className="h-36 bg-gray-100 rounded overflow-hidden flex items-center justify-center text-gray-400">
         <img src={img} alt={title} className="w-full h-full object-cover" />
       </div>

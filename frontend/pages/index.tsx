@@ -12,11 +12,11 @@ export default function Home(){
         {/* Hero */}
         <section className="grid md:grid-cols-2 gap-8 items-center py-12">
           <div>
-            <h1 className="text-3xl md:text-4xl font-bold animate-fade-in-up">Make referrals that reward you.</h1>
-            <p className="mt-4 text-gray-700 text-lg animate-fade-in-up">Create an account, share your personal referral link, and earn bonus credits when referred users complete their first purchase. Fast to set up and easy to share.</p>
-            <div className="mt-6 space-x-3">
-              <Link href="/register" className="px-5 py-3 bg-indigo-600 text-white rounded shadow">Get Started</Link>
-              <Link href="/product" className="px-5 py-3 border rounded">Browse Store</Link>
+            <h1 className="text-4xl md:text-5xl font-extrabold leading-tight text-gray-900 animate-fade-in-up">Make referrals that reward you.</h1>
+            <p className="mt-4 text-gray-700 text-lg md:text-xl max-w-xl animate-fade-in-up">Create an account, share your personal referral link, and earn bonus credits when referred users complete their first purchase. Fast to set up and easy to share.</p>
+            <div className="mt-8 flex items-center space-x-4">
+              <Link href="/register" className="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-lg shadow-md text-base">Get Started</Link>
+              <Link href="/product" className="px-6 py-3 border rounded-lg text-base">Browse Store</Link>
             </div>
           </div>
           <div>
