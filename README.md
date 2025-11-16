@@ -1,68 +1,177 @@
-# Referral Credit System
+🚀 Referral Credit System
 
-Simple referral + credits demo app (Express + TypeScript backend, Next.js frontend).
+A simple and clean Referral + Credit System built with:
 
-## Features
-- User register/login (JWT)
-- Referral codes and referral tracking (`pending` → `converted`)
-- Default 10 credits on new users
-- Simulated product purchase (deduct credits)
-- First-purchase referral bonus: **referrer and referred each earn +2 credits once**
+Express + TypeScript (Backend)
 
-## Repo structure
-- `backend/` — Express + TypeScript API
-- `frontend/` — Next.js frontend
+Next.js + TypeScript + Tailwind (Frontend)
 
-## Quick start (local)
-Prerequisites: Node 16+, npm, MongoDB (local)
+MongoDB (Database)
 
-1. Start MongoDB (local):
-   - Example: `mongod --dbpath /path/to/db` (or use MongoDB Desktop/Atlas)
+This project implements secure authentication, referral tracking, first-purchase credit rewards, and a modern dashboard UI.
 
-2. Backend
+✨ Features
+🔐 Authentication
 
-```powershell
+JWT-based login/register
+
+Password hashing using bcrypt
+
+Protected backend routes
+
+Persistent frontend auth state
+
+👥 Referral System
+
+Unique referral code for each user
+
+Tracks referral lifecycle: pending → converted
+
+First purchase only → +2 credits to referrer & referred
+
+credited flag ensures no double-crediting
+
+Auto-applied referral during signup (?r=REFCODE)
+
+💰 Credits System
+
+New users start with 10 credits
+
+Simulated product purchase deducts credits
+
+Referral bonus awarded only once
+
+📊 Dashboard
+
+Total referred users
+
+Converted users
+
+Total credits earned
+
+Referral link with copy/share
+
+Responsive Tailwind UI
+
+🧑‍💻 How to Clone & Run the Project Locally
+0️⃣ Clone the Repository
+
+Anyone can clone the repository using:
+
+git clone https://github.com/udayasri-pagilla/refferal-credict-system
+cd https://github.com/udayasri-pagilla/refferal-credict-system
+
+⚙️ Quick Start (Local Development)
+Prerequisites
+
+Node.js 16+
+
+npm or yarn
+
+MongoDB (local or Atlas)
+
+1️⃣ Start MongoDB
+
+Example for local:
+
+mongod --dbpath /path/to/db
+
+
+Or simply use MongoDB Compass / Desktop / Atlas.
+
+2️⃣ Backend Setup
 cd backend
-cp .env.example .env  # edit if needed
+cp .env.example .env    # or create manually
 npm install
 npm run dev
-```
 
-Backend runs on `http://localhost:4000` by default.
 
-3. Frontend
+Backend URL:
 
-```powershell
+http://localhost:4000
+
+Backend .env variables:
+MONGO_URI=mongodb://localhost:27017/referral_credit
+PORT=4000
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=7d
+
+3️⃣ Frontend Setup
 cd frontend
-copy .env.local.example .env.local
+cp .env.local.example .env.local
 npm install
 npm run dev
-```
 
-Open `http://localhost:3000`.
 
-## Environment variables
-- `backend/.env`:
-  - `MONGO_URI` (e.g. `mongodb://localhost:27017/referral_credit`)
-  - `PORT` (default `4000`)
-  - `JWT_SECRET` and `JWT_EXPIRES_IN`
-- `frontend/.env.local`:
-  - `NEXT_PUBLIC_API_BASE` (default `http://localhost:4000/api`)
+Frontend URL:
 
-## Important notes
-- The backend purchase route avoids MongoDB transactions to support standalone local MongoDB instances. If you run a replica set and want transactions, the code can be adapted.
-- The referral bonus is applied only once (the `credited` flag prevents double-crediting).
+http://localhost:3000
 
-## Running tests / CI
-A simple GitHub Actions workflow builds both backend and frontend on push to `main`.
+Frontend .env.local variables:
+NEXT_PUBLIC_API_BASE=http://localhost:4000
 
-## Deploy
-- Frontend: Vercel
-- Backend: Render / Railway / Heroku (set env vars and MONGO_URI)
 
-## Development tips
-- Check browser LocalStorage for `auth_token` and `auth_user` when debugging auth state.
-- Default credits for new users: `10`.
+This connects the frontend → backend.
 
----
-If you want, I can add a Postman collection or Swagger docs next. Let me know.
+🔌 API Summary
+Auth APIs
+POST /api/auth/register
+POST /api/auth/login
+GET  /api/auth/me
+
+Referral APIs
+GET /api/referrals/me
+GET /api/dashboard
+
+Purchase API
+POST /api/purchases
+
+📘 Important Notes
+
+Referral bonus is awarded only once → tracked via credited: true
+
+MVC-style clean code organization
+
+Frontend uses LocalStorage for auth_token + auth_user
+
+Default user credits: 10
+
+No MongoDB transactions required (works with standalone/local DB)
+
+🚀 Deployment
+
+Options include:
+
+Vercel (Frontend)
+
+Render, Railway, or Heroku (Backend)
+
+MongoDB Atlas (Free Tier)
+
+Set the same environment variables in your hosting platform.
+
+🧪 CI / Tests
+
+A GitHub Actions workflow is included that:
+
+Installs dependencies
+
+Builds backend + frontend
+
+Runs type checks
+
+Triggers on push to main.
+
+🎯 Final Notes
+
+This project demonstrates:
+
+A realistic referral + credit workflow
+
+Secure authentication
+
+Safe backend logic preventing double-credit
+
+Clean Next.js UI and UX
+
+Clear documentation so anyone can clone & run your project easily
