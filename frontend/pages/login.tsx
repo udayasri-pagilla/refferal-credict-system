@@ -1,124 +1,131 @@
 // pages/login.tsx
-import type { NextPage } from 'next';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import Nav from '../components/Nav';
-import useAuth from '../store/useAuth';
+import { useState } from 'react'
+import Link from 'next/link'
+import { useRouter } from 'next/router'
+import Nav from '../components/Nav'
+import useAuth from '../store/useAuth'
 
-const LoginPage: NextPage = () => {
-  const router = useRouter();
-  const setAuth = useAuth((s: any) => s.setAuth);
-  const [email, setEmail] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [busy, setBusy] = useState<boolean>(false);
-  const [msg, setMsg] = useState<string | null>(null);
+export default function LoginPage() {
+  const router = useRouter()
+  const setAuth = useAuth(state => state.setAuth)
+
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  function normalizeBaseUrl(raw?: string) {
+    if (!raw) return 'http://localhost:4000'
+    let url = raw.trim()
+    if (url.endsWith('/')) url = url.slice(0, -1)
+    return url
+  }
+
+  function getApiBase() {
+    return normalizeBaseUrl(process.env.NEXT_PUBLIC_API_BASE)
+  }
 
   async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setMsg(null);
-    setBusy(true);
+    e.preventDefault()
+    setError(null)
+
+    if (!email || !password) return setError('Please fill all fields')
+
+    setLoading(true)
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api';
-      const res = await fetch(`${base}/auth/login`, {
+      const base = getApiBase()
+      const url = `${base}/api/auth/login`
+
+      const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-      });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json?.error || json?.message || 'Login failed');
-      // preserve existing behavior
-      setAuth(json.token, json.user);
-      if (typeof window !== 'undefined' && json.token) localStorage.setItem('token', json.token);
-      router.push('/dashboard');
+      })
+
+      const text = await res.text()
+      let json: any = null
+      try {
+        json = text ? JSON.parse(text) : null
+      } catch (err) {
+        throw new Error(`Server returned non-JSON (status ${res.status}). Preview: ${text.slice(0, 200)}`)
+      }
+
+      if (!res.ok) throw new Error(json?.message || 'Login failed')
+
+      if (json.token && json.user) {
+        setAuth(json.token, json.user)
+        if (typeof window !== 'undefined') {
+          try { localStorage.setItem('token', json.token) } catch {}
+        }
+      }
+
+      router.replace('/dashboard')
     } catch (err: any) {
-      setMsg(err?.message || 'Login failed — check credentials');
+      console.error('Login error:', err)
+      setError(err?.message || 'Login failed')
     } finally {
-      setBusy(false);
+      setLoading(false)
     }
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white via-slate-50 to-slate-100">
       <Nav />
-      <main className="w-full max-w-7xl mx-auto px-6 py-20">
-        <div className="max-w-xl mx-auto">
-          <div className="flex items-center gap-3 mb-8">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-500 flex items-center justify-center text-white font-bold">RS</div>
-            <div>
-              <h1 className="text-2xl font-semibold text-slate-900">Sign in</h1>
-              <p className="text-sm text-slate-500">Access your account and manage referrals</p>
-            </div>
-          </div>
-
+      <main className="w-full max-w-7xl mx-auto px-6 py-16">
+        <div className="mx-auto max-w-md">
           <div className="bg-white rounded-2xl shadow-xl p-10">
-            {msg && <div className="mb-4 text-sm text-rose-700 bg-rose-50 p-3 rounded-md border border-rose-100">{msg}</div>}
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-bold text-slate-900">Welcome Back</h2>
+              <p className="mt-2 text-sm text-slate-500">Log in to continue</p>
+            </div>
 
-            <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="login-heading">
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-6" noValidate>
+
               <div>
-                <label className="block text-sm font-medium text-slate-600 mb-2">Email</label>
+                <label className="block text-sm text-slate-600 mb-1">Email</label>
                 <input
                   type="email"
-                  required
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-300/60 focus:border-indigo-500 transition"
+                  onChange={e=>setEmail(e.target.value)}
                   placeholder="you@example.com"
+                  className="w-full rounded-xl border border-slate-200 px-5 py-3 text-base focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition"
+                  required
                 />
               </div>
 
               <div>
-                <div className="flex items-center justify-between">
-                  <label className="block text-sm font-medium text-slate-600 mb-2">Password</label>
-                  <Link href="/forgot" className="text-sm text-indigo-600 hover:underline">Forgot?</Link>
-                </div>
+                <label className="block text-sm text-slate-600 mb-1">Password</label>
                 <input
                   type="password"
-                  required
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-indigo-300/60 focus:border-indigo-500 transition"
-                  placeholder="Enter your password"
+                  onChange={e=>setPassword(e.target.value)}
+                  placeholder="Your password"
+                  className="w-full rounded-xl border border-slate-200 px-5 py-3 text-base focus:ring-2 focus:ring-indigo-500/30 focus:border-indigo-500 transition"
+                  required
                 />
               </div>
 
-              <button
-                type="submit"
-                disabled={busy}
-                className="w-full inline-flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow hover:brightness-105 active:scale-[0.995] transition disabled:opacity-60"
-              >
-                {busy ? 'Signing in…' : 'Sign in'}
-              </button>
+              <div>
+                <button
+                  disabled={loading}
+                  type="submit"
+                  className="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold shadow-lg hover:opacity-95 active:scale-[0.98] transition text-lg"
+                >
+                  {loading ? 'Logging in...' : 'Log In'}
+                </button>
+              </div>
+
+              {error && <div className="text-sm text-red-600 text-center">{error}</div>}
+
+              <div className="text-sm text-slate-600 mt-2 text-center">
+                Don’t have an account?{' '}
+                <Link href="/register" className="text-indigo-600 hover:underline font-semibold">Register</Link>
+              </div>
+
             </form>
-
-            <div className="my-6 flex items-center justify-center text-sm text-slate-400">
-              <span className="px-3 bg-white">or continue with</span>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3">
-              <button
-                type="button"
-                onClick={() => setMsg('Google sign-in not configured in demo')}
-                className="w-full border border-slate-200 rounded-xl py-3 flex items-center justify-center gap-3 text-slate-700 hover:bg-slate-50 transition"
-              >
-                <img src="/icons/google.svg" alt="google" className="w-5 h-5" />
-                Continue with Google
-              </button>
-            </div>
-
-            <div className="mt-6 text-center text-sm text-slate-500">
-              Don’t have an account? <Link href="/register" className="text-indigo-600 font-semibold hover:underline">Create account</Link>
-            </div>
-          </div>
-
-          <div className="mt-6 text-center text-sm text-slate-500">
-            <span>By signing in you agree to our </span>
-            <Link href="/terms" className="text-indigo-600 hover:underline">Terms</Link>
           </div>
         </div>
       </main>
     </div>
-  );
-};
-
-export default LoginPage;
+  )
+}

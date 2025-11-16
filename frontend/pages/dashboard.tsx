@@ -45,9 +45,9 @@ const DashboardPage: NextPage = () => {
     setLoading(true);
     (async () => {
       try {
-        const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api';
+        const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000';
         const headers = buildAuthHeaders(token);
-        const res = await fetch(`${base}/dashboard`, { headers });
+        const res = await fetch(`${base}/api/dashboard`, { headers });
         if (!res.ok) {
           const body = await res.json().catch(() => ({ message: 'Failed' }));
           throw new Error(body?.message || body?.error || 'Failed to load');

@@ -15,7 +15,7 @@ export default function Home(){
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight text-gray-900 animate-fade-in-up">Make referrals that reward you.</h1>
             <p className="mt-4 text-gray-700 text-lg md:text-xl max-w-xl animate-fade-in-up">Create an account, share your personal referral link, and earn bonus credits when referred users complete their first purchase. Fast to set up and easy to share.</p>
             <div className="mt-8 flex items-center space-x-4">
-              <Link href="/register" className="px-6 py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-lg shadow-md text-base">Get Started</Link>
+              <Link href="/register" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md text-base">Get Started</Link>
               <Link href="/product" className="px-6 py-3 border rounded-lg text-base">Browse Store</Link>
             </div>
           </div>
@@ -25,7 +25,7 @@ export default function Home(){
               <div className="mt-3 font-semibold text-lg">Demo Product</div>
               <div className="mt-2 text-gray-600">Price: $10</div>
               <div className="mt-4">
-                <Link href="/product" className="px-4 py-2 bg-indigo-600 text-white rounded">Buy Now</Link>
+                <Link href="/product" className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md text-base">Buy Now</Link>
               </div>
             </div>
           </div>

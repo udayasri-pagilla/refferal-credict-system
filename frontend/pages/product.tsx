@@ -50,9 +50,9 @@ export default function Product(): JSX.Element {
     setErr(null)
     setLoadingId(productId)
     try {
-      const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000/api'
+      const base = process.env.NEXT_PUBLIC_API_BASE || 'http://localhost:4000'
       const headers = buildAuthHeaders(token)
-      const res = await fetch(base + '/purchase/buy', {
+      const res = await fetch(base + '/api/purchase/buy', {
         method: 'POST',
         headers,
         body: JSON.stringify({ amount })
@@ -112,7 +112,7 @@ export default function Product(): JSX.Element {
                 <button
                   onClick={() => buy(p.id, 10)}
                   disabled={!!loadingId}
-                  className="flex-1 px-4 py-2 bg-brand-600 text-white rounded"
+                  className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-md text-base"
                 >
                   {loadingId === p.id ? 'Processing...' : 'Buy'}
                 </button>
